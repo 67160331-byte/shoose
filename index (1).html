@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>ก้าวดี Shoe Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky shop bar, one content column (max 1180px); catalog grid, two-column tools, admin as tabbed tables */
+:root{
+  --bg:#EDEFF2; --surface:#FFFFFF; --panel:#E2E6EC; --ink:#15171C; --muted:#5B6270; --line:#D3D8DF;
+  --accent:#2B44C9; --accent-ink:#FFFFFF; --accent-soft:#E3E7FB; --mustard:#B98317;
+  --ok:#1D7F55; --ok-soft:#DDF2E8; --warn:#9A6410; --warn-soft:#FBEFD6; --danger:#B8322A; --danger-soft:#FBE3E1;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1115; --surface:#171A20; --panel:#20242C; --ink:#ECEEF2; --muted:#9BA2AF; --line:#2B303A;
+  --accent:#8195FF; --accent-ink:#0E1016; --accent-soft:#232A4A; --mustard:#E0B04E;
+  --ok:#55C792; --ok-soft:#173327; --warn:#E7B254; --warn-soft:#3A2D12; --danger:#FF8378; --danger-soft:#3D1D1A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1115; --surface:#171A20; --panel:#20242C; --ink:#ECEEF2; --muted:#9BA2AF; --line:#2B303A;
+  --accent:#8195FF; --accent-ink:#0E1016; --accent-soft:#232A4A; --mustard:#E0B04E;
+  --ok:#55C792; --ok-soft:#173327; --warn:#E7B254; --warn-soft:#3A2D12; --danger:#FF8378; --danger-soft:#3D1D1A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
+h1{font-size:clamp(26px,4vw,36px)} h2{font-size:22px} h3{font-size:17px}
+p{margin:0}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* top bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:18px;padding-block:10px;flex-wrap:wrap}
+.logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink)}
+.logo b{font-family:var(--f-display);font-size:22px;font-weight:700;letter-spacing:-.01em}
+.logo span{font-size:12px;color:var(--muted)}
+.logo i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);transform:skewX(-14deg)}
+nav{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+nav a{padding:6px 12px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:500}
+nav a:hover{color:var(--ink);background:var(--panel)}
+nav a.on{color:var(--ink);background:var(--panel)}
+nav a.admin{color:var(--mustard)}
+.bar-right{display:flex;gap:8px;align-items:center}
+.cart-btn{position:relative}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-size:11px;display:grid;place-items:center;padding:0 5px;font-family:var(--f-mono)}
+
+/* buttons/forms */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:500;text-decoration:none;color:var(--ink)}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.danger{color:var(--danger)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+label.f{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{min-height:140px;resize:vertical}
+.form{display:grid;gap:12px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.row2{grid-template-columns:1fr}}
+
+main{padding-block:28px 56px;display:grid;gap:28px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+
+/* hero strip */
+.strip{display:grid;grid-template-columns:1.4fr 1fr;gap:20px;align-items:stretch}
+.strip .intro{display:grid;gap:12px;align-content:center}
+.strip .intro p{max-width:58ch;color:var(--muted)}
+.quickfit{background:var(--ink);color:var(--bg);border-radius:var(--r);padding:20px;display:grid;gap:10px}
+.quickfit .eyebrow{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.quickfit input{background:transparent;border-color:color-mix(in srgb,var(--bg) 35%,transparent);color:var(--bg)}
+.quickfit .res{font-family:var(--f-display);font-size:20px}
+@media (max-width:760px){.strip{grid-template-columns:1fr}}
+
+/* filters */
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.filters .search{flex:1 1 220px}
+.filters label.f{flex:0 1 170px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:14px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* product grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:grid;grid-template-rows:auto 1fr;cursor:pointer;text-align:left;padding:0}
+.pcard:hover{border-color:var(--muted)}
+.pimg{background:var(--panel);aspect-ratio:16/10;display:grid;place-items:center;max-width:100%}
+.pimg svg{width:82%;height:auto}
+.pbody{padding:14px 16px 16px;display:grid;gap:6px;align-content:start}
+.pmeta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.pname{font-family:var(--f-display);font-weight:600;font-size:17px}
+.sizes{display:flex;gap:4px;flex-wrap:wrap}
+.sz{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:1px 6px}
+.sz.out{opacity:.4;text-decoration:line-through}
+.sz.fit{border-color:var(--accent);color:var(--accent)}
+.price{font-family:var(--f-mono);font-size:17px;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:999px;background:var(--panel);color:var(--muted)}
+.empty{padding:40px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:color-mix(in srgb,#000 50%,transparent);z-index:50;display:grid;place-items:center;padding:16px}
+.modal{background:var(--surface);border-radius:14px;max-width:860px;width:100%;max-height:calc(100% - 32px);overflow:auto;display:grid;grid-template-columns:1fr 1fr}
+.modal .pimg{aspect-ratio:auto;min-height:260px;height:100%}
+.modal .mbody{padding:24px;display:grid;gap:14px;align-content:start}
+@media (max-width:700px){.modal{grid-template-columns:1fr}.modal .pimg{min-height:200px}}
+.sizepick{display:flex;gap:6px;flex-wrap:wrap}
+.sizepick button{font-family:var(--f-mono);min-width:52px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer}
+.sizepick button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.sizepick button.fit{border-color:var(--accent)}
+.sizepick button:disabled{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.note{font-size:13px;padding:8px 12px;border-radius:8px;background:var(--accent-soft)}
+.note.warn{background:var(--warn-soft);color:var(--warn)}
+
+/* size guide */
+.two{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+tr.hl td{background:var(--accent-soft)}
+tr.low td{background:var(--danger-soft)}
+ol.steps{margin:0;padding-left:20px;display:grid;gap:10px}
+.ruler{height:28px;border-radius:6px;background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px),var(--panel);background-size:auto 40%,auto;background-repeat:repeat-x;background-position:bottom,0 0;position:relative;margin-top:6px}
+
+/* articles */
+.alist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.acard{display:grid;gap:8px;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.acard:hover{border-color:var(--muted)}
+.article{max-width:68ch;display:grid;gap:14px}
+.article .body p{margin-bottom:12px}
+.article .body h3{margin:18px 0 6px}
+
+/* cart */
+.cartline{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding-block:12px;border-bottom:1px solid var(--line)}
+.cartline .pimg{aspect-ratio:1;border-radius:8px}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:28px;height:28px;border-radius:6px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.sum{display:grid;gap:8px}
+.sum div{display:flex;justify-content:space-between}
+.sum .total{font-family:var(--f-display);font-size:20px;border-top:1px solid var(--line);padding-top:10px}
+
+/* status pills */
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px}
+.pill.Pending{background:var(--warn-soft);color:var(--warn)}
+.pill.Paid{background:var(--accent-soft);color:var(--accent)}
+.pill.Shipped{background:var(--ok-soft);color:var(--ok)}
+.pill.Cancelled{background:var(--panel);color:var(--muted)}
+.pill.low{background:var(--danger-soft);color:var(--danger)}
+
+/* admin */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media (max-width:820px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:4px}
+.stat .v{font-family:var(--f-mono);font-size:26px;font-variant-numeric:tabular-nums}
+.stat.alert{border-color:var(--danger)}
+.stat.alert .v{color:var(--danger)}
+.admin-split{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media (max-width:900px){.admin-split{grid-template-columns:1fr}}
+.head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;z-index:60;font-weight:500;max-width:calc(100% - 32px)}
+footer{border-top:1px solid var(--line);background:var(--surface)}
+footer .wrap{padding-block:20px;display:grid;gap:6px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.pcard,.acard{transition:border-color .15s}}
+</style>
+</head>
+<body>
+
+<header class="bar"><div class="wrap">
+  <a class="logo" href="#shop" data-go="shop"><i></i><b>ก้าวดี</b><span>Shoe Store &amp; Style Guide</span></a>
+  <nav id="nav"></nav>
+  <div class="bar-right" id="barRight"></div>
+</div></header>
+<main class="wrap" id="app"></main>
+<footer><div class="wrap">
+  <p>ระบบต้นแบบ (Prototype) เพื่อการศึกษา ชื่อแบรนด์ สินค้า และภาพทั้งหมดเป็นข้อมูลจำลอง ข้อมูลเก็บไว้ในเบราว์เซอร์ของคุณเท่านั้น</p>
+  <p>จัดทำโดย นาย ณัฐภพ พิมพา 67160331 · <button class="btn ghost sm" data-act="reset">รีเซ็ตข้อมูลตัวอย่าง</button></p>
+</div></footer>
+<div id="layer"></div>
+
+<script>
+/* ---------- size chart (unisex / US men's base; foot length in cm) ---------- */
+const SIZE_CHART=[
+ {cm:22.5,eu:35.5,usm:3.5,usw:5,uk:3},{cm:23,eu:36,usm:4,usw:5.5,uk:3.5},{cm:23.5,eu:36.5,usm:4.5,usw:6,uk:4},
+ {cm:23.5,eu:37.5,usm:5,usw:6.5,uk:4.5},{cm:24,eu:38,usm:5.5,usw:7,uk:5},{cm:24,eu:38.5,usm:6,usw:7.5,uk:5.5},
+ {cm:24.5,eu:39,usm:6.5,usw:8,uk:6},{cm:25,eu:40,usm:7,usw:8.5,uk:6},{cm:25.5,eu:40.5,usm:7.5,usw:9,uk:6.5},
+ {cm:26,eu:41,usm:8,usw:9.5,uk:7},{cm:26.5,eu:42,usm:8.5,usw:10,uk:7.5},{cm:27,eu:42.5,usm:9,usw:10.5,uk:8},
+ {cm:27.5,eu:43,usm:9.5,usw:11,uk:8.5},{cm:28,eu:44,usm:10,usw:11.5,uk:9},{cm:28.5,eu:44.5,usm:10.5,usw:12,uk:9.5},
+ {cm:29,eu:45,usm:11,usw:12.5,uk:10},{cm:30,eu:46,usm:12,usw:13.5,uk:11}];
+function fitFromCm(cm){ if(!(cm>0))return null; return SIZE_CHART.find(r=>r.cm>=cm)||null; }
+function nearestEU(eu,avail){ if(!eu||!avail.length)return null; return avail.reduce((b,s)=>Math.abs(s-eu)<Math.abs(b-eu)?s:b,avail[0]); }
+
+const CAT={sneaker:'รองเท้าผ้าใบ',running:'รองเท้าวิ่ง',leather:'รองเท้าหนัง',sandal:'รองเท้าแตะ'};
+const USE={running:'Running',casual:'Casual',formal:'Formal'};
+const STATUSES=['Pending','Paid','Shipped','Cancelled'];
+const STATUS_TH={Pending:'รอดำเนินการ',Paid:'ชำระแล้ว',Shipped:'จัดส่งแล้ว',Cancelled:'ยกเลิก'};
+const COLORS={'น้ำเงิน':'#2F4BC0','ขาว':'#F4F4F1','ดำ':'#24262B','น้ำตาล':'#7A4B2A','เทา':'#8C939E','เขียวมะกอก':'#6B7344','แดง':'#C23B32'};
+
+/* ---------- seed data (schema: users, products, orders, order_items, articles) ---------- */
+function seed(){
+  const P=[]; let id=1;
+  const add=(m)=>m.sizes.forEach(([size,stock])=>P.push({id:id++,model:m.model,name:m.name,category:m.category,brand:m.brand,usage_type:m.usage_type,color:m.color,size,price:m.price,stock_quantity:stock,article_id:m.article_id}));
+  add({model:'stride-air',name:'Stride Air 2',category:'running',brand:'Kinetra',usage_type:'running',color:'น้ำเงิน',price:2890,article_id:2,sizes:[[39,4],[40,6],[41,8],[42,2],[43,5],[44,1]]});
+  add({model:'daybreak',name:'Daybreak Canvas',category:'sneaker',brand:'Lanna Lane',usage_type:'casual',color:'ขาว',price:1590,article_id:3,sizes:[[38,5],[39,7],[40,9],[41,6],[42,4],[43,3]]});
+  add({model:'oxford',name:'Oxford Classic',category:'leather',brand:'Bangrak Leather Co.',usage_type:'formal',color:'น้ำตาล',price:3490,article_id:3,sizes:[[40,3],[41,4],[42,2],[43,3],[44,2]]});
+  add({model:'soi-slide',name:'Soi Slide',category:'sandal',brand:'Tropik',usage_type:'casual',color:'ดำ',price:490,article_id:1,sizes:[[38,10],[39,12],[40,8],[41,9],[42,7],[43,6],[44,4]]});
+  add({model:'trail-tempo',name:'Trail Tempo',category:'running',brand:'Kinetra',usage_type:'running',color:'เทา',price:3190,article_id:2,sizes:[[40,3],[41,5],[42,4],[43,0],[44,2]]});
+  const users=[
+    {id:1,name:'ผู้ดูแลระบบ',email:'admin@kaodee.test',password:'admin123',role:'admin',address:'',foot_size:null},
+    {id:2,name:'สมชาย ใจดี',email:'somchai@kaodee.test',password:'1234',role:'customer',address:'99/1 ถ.สุขุมวิท แขวงคลองตัน เขตคลองเตย กรุงเทพฯ 10110',foot_size:42}];
+  const d=(n)=>new Date(Date.now()-n*86400000).toISOString();
+  const orders=[
+    {id:1001,user_id:2,total_amount:2890,status:'Shipped',shipping_address:users[1].address,created_at:d(9)},
+    {id:1002,user_id:2,total_amount:2080,status:'Paid',shipping_address:users[1].address,created_at:d(3)},
+    {id:1003,user_id:2,total_amount:3490,status:'Pending',shipping_address:users[1].address,created_at:d(1)}];
+  const order_items=[
+    {id:1,order_id:1001,product_id:4,quantity:1,price:2890},
+    {id:2,order_id:1002,product_id:10,quantity:1,price:1590},{id:3,order_id:1002,product_id:20,quantity:1,price:490},
+    {id:4,order_id:1003,product_id:15,quantity:1,price:3490}];
+  const articles=[
+    {id:1,title:'วัดเท้าเองที่บ้าน เพื่อเลือกไซซ์ให้ถูก',topic:'ไซซ์และการวัดเท้า',created_at:d(30),content:
+`ไซซ์รองเท้าแต่ละแบรนด์อาจต่างกันเล็กน้อย การรู้ความยาวเท้าเป็นเซนติเมตรช่วยให้เทียบไซซ์ได้แม่นกว่าการจำเบอร์เดิม
+
+## สิ่งที่ต้องใช้
+กระดาษ A4 หนึ่งแผ่น ดินสอ และไม้บรรทัด
+
+## วิธีวัด
+วางกระดาษชิดผนัง ยืนให้ส้นเท้าแตะผนัง ทิ้งน้ำหนักลงเท้าเต็มที่ แล้วขีดเส้นตรงปลายนิ้วที่ยาวที่สุด วัดจากขอบกระดาษถึงเส้นนั้น
+วัดทั้งสองข้างและใช้ค่าที่ยาวกว่า ควรวัดช่วงเย็น เพราะเท้ามักขยายเล็กน้อยระหว่างวัน
+
+## เทียบเป็นไซซ์
+นำค่าที่ได้ไปเทียบในหน้าคู่มือเทียบไซซ์ ถ้าค่าอยู่ระหว่างสองไซซ์ ให้เลือกไซซ์ที่ใหญ่กว่า โดยเฉพาะรองเท้าวิ่งที่ควรมีที่ว่างปลายเท้าประมาณครึ่งนิ้วโป้ง`},
+    {id:2,title:'เลือกรองเท้าให้ตรงกับการใช้งาน',topic:'ประเภทรองเท้า',created_at:d(20),content:
+`รองเท้าแต่ละแบบออกแบบมาเพื่องานต่างกัน การเลือกให้ตรงช่วยให้สวมสบายและใช้งานได้นานขึ้น
+
+## Running รองเท้าวิ่ง
+พื้นรองเท้ามีการรองรับแรงกระแทกและน้ำหนักเบา เหมาะกับการวิ่งและเดินระยะไกล ควรลองวิ่งเหยาะ ๆ ในร้านก่อนตัดสินใจ
+
+## Casual รองเท้าผ้าใบและรองเท้าแตะ
+เน้นความสบายในชีวิตประจำวัน รองเท้าผ้าใบใส่ได้หลายโอกาส รองเท้าแตะเหมาะกับการใช้งานระยะสั้นและอากาศร้อน
+
+## Formal รองเท้าหนัง
+ทรงเรียบและพื้นแข็งกว่า หนังจะยืดเข้ารูปเท้าเล็กน้อยเมื่อใส่ไปสักระยะ จึงควรเลือกไซซ์ที่พอดี ไม่หลวม`},
+    {id:3,title:'ดูแลและทำความสะอาดรองเท้า และนโยบายเปลี่ยนคืน',topic:'การดูแลรักษา',created_at:d(10),content:
+`การดูแลอย่างสม่ำเสมอช่วยยืดอายุรองเท้าได้
+
+## รองเท้าผ้าใบ
+ปัดฝุ่นออกก่อน ใช้แปรงขนนุ่มกับน้ำสบู่อ่อน ๆ เช็ดเฉพาะจุด แล้วผึ่งในที่ร่มให้แห้งสนิท หลีกเลี่ยงการตากแดดจัดเพราะกาวอาจเสื่อม
+
+## รองเท้าหนัง
+เช็ดด้วยผ้าหมาด ทาครีมบำรุงหนังเดือนละครั้ง และเก็บโดยใส่ดันทรงไว้
+
+## นโยบายเปลี่ยน/คืนสินค้า (ตัวอย่าง)
+เปลี่ยนไซซ์ได้ภายใน 7 วันหลังได้รับสินค้า สินค้าต้องยังไม่ผ่านการใช้งานและอยู่ในกล่องเดิม ร้านจะตรวจสอบสภาพก่อนเปลี่ยนให้`}];
+  return {users,products:P,orders,order_items,articles,seq:{user:3,product:id,order:1004,item:5,article:4}};
+}
+
+/* ---------- storage (per-browser, guarded) ---------- */
+const KEY='kaodee-demo-v1';
+function load(){ try{const s=localStorage.getItem(KEY); if(s) return JSON.parse(s);}catch(e){} return null; }
+let S=load()||{db:seed(),cart:[],session:null};
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){} }
+const db=()=>S.db;
+const me=()=>S.session?db().users.find(u=>u.id===S.session):null;
+
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const baht=n=>'฿'+Number(n).toLocaleString('th-TH');
+const dt=s=>new Date(s).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+const models=()=>{const m={};db().products.forEach(p=>{(m[p.model]=m[p.model]||{...p,variants:[]}).variants.push(p)});Object.values(m).forEach(x=>x.variants.sort((a,b)=>a.size-b.size));return Object.values(m);};
+function toast(msg){document.querySelectorAll('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2400);}
+
+function shoe(cat,colorName){
+  const c=COLORS[colorName]||'#888'; const sole='var(--surface)'; const line='rgba(0,0,0,.28)';
+  if(cat==='sandal') return `<svg viewBox="0 0 240 140" aria-hidden="true"><path d="M18 110 Q18 122 34 122 L210 122 Q228 122 226 108 Q224 98 206 98 L34 98 Q18 98 18 110Z" fill="${c}"/><path d="M18 106 L226 104" stroke="${line}" stroke-width="2" fill="none"/><path d="M70 100 Q92 58 132 60 Q162 62 172 100" stroke="${c}" stroke-width="22" fill="none" stroke-linecap="round"/><path d="M70 100 Q92 58 132 60 Q162 62 172 100" stroke="${line}" stroke-width="2" fill="none" stroke-dasharray="4 6"/></svg>`;
+  if(cat==='leather') return `<svg viewBox="0 0 240 140" aria-hidden="true"><path d="M20 108 L26 84 Q30 68 54 66 L112 64 Q152 62 192 80 Q224 92 222 108Z" fill="${c}"/><path d="M18 108 L224 108 Q224 118 214 118 L30 118 Q18 118 18 108Z" fill="#2a2420"/><rect x="20" y="108" width="36" height="14" rx="2" fill="#2a2420"/><path d="M104 68 Q130 86 168 78" stroke="${line}" stroke-width="2" fill="none"/><path d="M40 88 Q90 96 214 96" stroke="${line}" stroke-width="1.5" fill="none" stroke-dasharray="3 4"/></svg>`;
+  const stripe=cat==='running'?`<path d="M70 96 Q120 70 196 84" stroke="${colorName==='ขาว'?'#2B44C9':'#fff'}" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>`:'';
+  return `<svg viewBox="0 0 240 140" aria-hidden="true"><path d="M18 104 Q16 120 32 122 L212 122 Q230 121 226 104 Z" fill="${sole}" stroke="${line}" stroke-width="2"/><path d="M22 104 L28 70 Q34 50 58 52 L92 58 Q108 38 132 44 L152 62 Q192 70 214 84 Q228 92 224 104 Z" fill="${c}" stroke="${line}" stroke-width="2"/>${stripe}<g stroke="${colorName==='ขาว'?'#444':'#fff'}" stroke-width="3" stroke-linecap="round"><path d="M112 54 L126 64"/><path d="M120 50 L134 62"/><path d="M128 48 L142 60"/></g><path d="M18 112 L226 112" stroke="${line}" stroke-width="1.5"/></svg>`;
+}
+
+/* ---------- routing ---------- */
+let view={page:'shop',filters:{q:'',cat:'all',use:'all',size:'all'},article:null,adminTab:'dash',editP:null,editA:null,fitCm:''};
+function go(page,extra={}){Object.assign(view,{page},extra);try{history.replaceState(null,'','#'+page)}catch(e){};render();window.scrollTo(0,0);}
+
+function render(){
+  const u=me(); const n=S.cart.reduce((a,c)=>a+c.qty,0);
+  const links=[['shop','สินค้า'],['size','คู่มือไซซ์'],['guide','Style Guide']];
+  $('#nav').innerHTML=links.map(([k,t])=>`<a href="#${k}" data-go="${k}" class="${view.page===k||(k==='guide'&&view.page==='article')?'on':''}">${t}</a>`).join('')+(u&&u.role==='admin'?`<a href="#admin" data-go="admin" class="admin ${view.page==='admin'?'on':''}">หลังร้าน</a>`:'');
+  $('#barRight').innerHTML=`<a class="btn ghost" href="#account" data-go="account">${u?esc(u.name.split(' ')[0]):'เข้าสู่ระบบ'}</a><a class="btn cart-btn" href="#cart" data-go="cart">ตะกร้า${n?`<span class="badge">${n}</span>`:''}</a>`;
+  const R={shop:renderShop,size:renderSize,guide:renderGuide,article:renderArticle,cart:renderCart,account:renderAccount,admin:renderAdmin}[view.page]||renderShop;
+  $('#app').innerHTML=R();
+}
+
+/* ---------- shop ---------- */
+function renderShop(){
+  const u=me(); const f=view.filters;
+  let list=models().filter(m=>
+    (f.cat==='all'||m.category===f.cat)&&(f.use==='all'||m.usage_type===f.use)&&
+    (f.size==='all'||m.variants.some(v=>v.size==+f.size&&v.stock_quantity>0))&&
+    (!f.q||(m.name+' '+m.brand+' '+CAT[m.category]+' '+m.color).toLowerCase().includes(f.q.toLowerCase())));
+  const allSizes=[...new Set(db().products.map(p=>p.size))].sort((a,b)=>a-b);
+  const fit=fitFromCm(parseFloat(view.fitCm));
+  return `
+  <section class="strip">
+    <div class="intro">
+      <span class="eyebrow">รองเท้าผ้าใบ · วิ่ง · หนัง · แตะ</span>
+      <h1>เลือกคู่ที่ใช่ ในไซซ์ที่พอดี</h1>
+      <p>ทุกรุ่นแสดงไซซ์ EU ที่มีในสต็อก ${u&&u.foot_size?`ไซซ์ที่ใกล้กับไซซ์ประจำของคุณ (EU ${u.foot_size}) จะขึ้นกรอบสีน้ำเงิน`:'กรอกไซซ์ประจำตอนสมัครสมาชิก แล้วเราจะไฮไลต์ไซซ์ที่น่าจะพอดีให้'}</p>
+    </div>
+    <div class="quickfit">
+      <span class="eyebrow">Fit Finder ด่วน</span>
+      <label class="f" style="color:inherit">ความยาวเท้า (ซม.)<input id="fitCm" type="number" step="0.1" min="20" max="32" placeholder="เช่น 26.3" value="${esc(view.fitCm)}"></label>
+      <div class="res" id="fitRes">${fit?`EU ${fit.eu} · US ${fit.usm} · UK ${fit.uk}`:'กรอกความยาวเท้าเพื่อดูไซซ์'}</div>
+      <a href="#size" data-go="size" style="color:inherit;font-size:13px">ดูตารางเทียบไซซ์และวิธีวัดเท้า →</a>
+    </div>
+  </section>
+  <section style="display:grid;gap:14px">
+    <div class="chips">${[['all','ทั้งหมด'],...Object.entries(CAT)].map(([k,t])=>`<button class="chip ${f.cat===k?'on':''}" data-cat="${k}">${t}</button>`).join('')}</div>
+    <div class="filters">
+      <label class="f search">ค้นหา<input id="q" type="search" placeholder="ชื่อรุ่น แบรนด์ หรือสี" value="${esc(f.q)}"></label>
+      <label class="f">การใช้งาน<select id="fuse"><option value="all">ทุกแบบ</option>${Object.entries(USE).map(([k,t])=>`<option value="${k}" ${f.use===k?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="f">ไซซ์ (EU) ที่มีของ<select id="fsize"><option value="all">ทุกไซซ์</option>${allSizes.map(s=>`<option ${f.size==s?'selected':''}>${s}</option>`).join('')}</select></label>
+    </div>
+  </section>
+  <section>${list.length?`<div class="grid">${list.map(m=>pcard(m,u)).join('')}</div>`:`<div class="empty">ไม่พบสินค้าที่ตรงกับตัวกรอง ลองล้างคำค้นหรือเลือก “ทั้งหมด”</div>`}</section>`;
+}
+function pcard(m,u){
+  const avail=m.variants.filter(v=>v.stock_quantity>0).map(v=>v.size);
+  const rec=u&&u.foot_size?nearestEU(u.foot_size,avail):null;
+  return `<button class="pcard" data-open="${m.model}">
+    <div class="pimg">${shoe(m.category,m.color)}</div>
+    <div class="pbody">
+      <div class="pmeta"><span>${esc(m.brand)}</span><span>${USE[m.usage_type]} · ${esc(m.color)}</span></div>
+      <div class="pname">${esc(m.name)}</div>
+      <div class="sizes">${m.variants.map(v=>`<span class="sz ${v.stock_quantity<=0?'out':''} ${v.size===rec?'fit':''}">${v.size}</span>`).join('')}</div>
+      <div class="pmeta" style="align-items:center"><span class="price">${baht(m.price)}</span><span class="tag">${CAT[m.category]}</span></div>
+    </div></button>`;
+}
+let pick=null;
+function openProduct(model){
+  const m=models().find(x=>x.model===model); if(!m)return; const u=me();
+  const avail=m.variants.filter(v=>v.stock_quantity>0).map(v=>v.size);
+  const rec=u&&u.foot_size?nearestEU(u.foot_size,avail):null;
+  if(!pick||pick.model!==model) pick={model,size:rec};
+  const v=m.variants.find(x=>x.size===pick.size); const art=db().articles.find(a=>a.id===m.article_id);
+  $('#layer').innerHTML=`<div class="overlay" data-close><div class="modal" role="dialog" aria-modal="true" aria-label="${esc(m.name)}">
+    <div class="pimg">${shoe(m.category,m.color)}</div>
+    <div class="mbody">
+      <div class="head"><span class="eyebrow">${esc(m.brand)} · ${CAT[m.category]}</span><button class="btn ghost sm" data-close>ปิด</button></div>
+      <h2>${esc(m.name)}</h2>
+      <div class="price">${baht(m.price)}</div>
+      <p class="muted">การใช้งาน ${USE[m.usage_type]} · สี${esc(m.color)}</p>
+      <div style="display:grid;gap:6px"><span class="eyebrow">เลือกไซซ์ (EU)</span>
+        <div class="sizepick">${m.variants.map(x=>`<button data-pick="${x.size}" class="${x.size===pick.size?'on':''} ${x.size===rec?'fit':''}" ${x.stock_quantity<=0?'disabled':''}>${x.size}</button>`).join('')}</div></div>
+      ${rec?`<div class="note">แนะนำ EU ${rec} จากไซซ์ประจำของคุณ (EU ${u.foot_size})</div>`:`<div class="note">ไม่แน่ใจไซซ์? <a href="#size" data-go="size" data-close>เทียบจากความยาวเท้า</a></div>`}
+      ${v&&v.stock_quantity<3?`<div class="note warn">เหลือ ${v.stock_quantity} คู่ในไซซ์นี้</div>`:''}
+      <button class="btn primary" data-add="${v?v.id:''}" ${v?'':'disabled'}>${v?`ใส่ตะกร้า · EU ${v.size}`:'เลือกไซซ์ก่อน'}</button>
+      ${art?`<p style="font-size:14px">อ่านเพิ่ม: <a href="#article" data-art="${art.id}">${esc(art.title)}</a></p>`:''}
+    </div></div></div>`;
+}
+function closeLayer(){ $('#layer').innerHTML=''; pick=null; }
+function addToCart(pid){
+  const p=db().products.find(x=>x.id===pid); if(!p)return;
+  const line=S.cart.find(c=>c.pid===pid); const cur=line?line.qty:0;
+  if(cur+1>p.stock_quantity){toast('สต็อกไซซ์นี้ไม่พอ');return;}
+  line?line.qty++:S.cart.push({pid,qty:1}); save(); closeLayer(); render(); toast(`เพิ่ม ${p.name} EU ${p.size} ลงตะกร้าแล้ว`);
+}
+
+/* ---------- size guide ---------- */
+function renderSize(){
+  const u=me(); const fit=fitFromCm(parseFloat(view.fitCm));
+  return `<section class="head"><div style="display:grid;gap:6px"><span class="eyebrow">Size Guide &amp; Fit Finder</span><h1>คู่มือเทียบไซซ์รองเท้า</h1></div></section>
+  <section class="two">
+    <div class="card" style="display:grid;gap:12px">
+      <h3>ตารางเทียบไซซ์ EU / US / UK / ซม.</h3>
+      <p class="muted" style="font-size:14px">ซม. คือความยาวเท้า (ไม่ใช่ความยาวรองเท้า) ตารางนี้เป็นค่ามาตรฐานโดยประมาณ แต่ละแบรนด์อาจต่างกันครึ่งไซซ์</p>
+      <div class="tablewrap"><table><thead><tr><th class="num">ซม.</th><th class="num">EU</th><th class="num">US ชาย</th><th class="num">US หญิง</th><th class="num">UK</th></tr></thead>
+      <tbody>${SIZE_CHART.map(r=>`<tr class="${fit&&r===fit?'hl':''}"><td class="num">${r.cm.toFixed(1)}</td><td class="num">${r.eu}</td><td class="num">${r.usm}</td><td class="num">${r.usw}</td><td class="num">${r.uk}</td></tr>`).join('')}</tbody></table></div>
+    </div>
+    <div style="display:grid;gap:20px">
+      <div class="card" style="display:grid;gap:12px">
+        <h3>Fit Finder</h3>
+        <label class="f">ความยาวเท้าข้างที่ยาวกว่า (ซม.)<input id="fitCm" type="number" step="0.1" min="20" max="32" placeholder="เช่น 26.3" value="${esc(view.fitCm)}"></label>
+        <div id="fitRes" style="font-family:var(--f-display);font-size:22px">${fit?`แนะนำ EU ${fit.eu} · US ${fit.usm} (ชาย) · UK ${fit.uk}`:'กรอกค่าเพื่อดูไซซ์แนะนำ'}</div>
+        ${u?`<button class="btn" data-act="savefit" ${fit?'':'disabled'}>บันทึกเป็นไซซ์ประจำของฉัน${u.foot_size?` (ตอนนี้ EU ${u.foot_size})`:''}</button>`:`<p class="muted" style="font-size:14px"><a href="#account" data-go="account">สมัครสมาชิก</a> แล้วกรอกไซซ์ประจำ เพื่อให้หน้าสินค้าแนะนำไซซ์ให้อัตโนมัติ</p>`}
+      </div>
+      <div class="card" style="display:grid;gap:12px">
+        <h3>วิธีวัดเท้า</h3>
+        <ol class="steps">
+          <li>วางกระดาษ A4 ชิดผนัง ยืนให้ส้นเท้าแตะผนัง</li>
+          <li>ทิ้งน้ำหนักลงเท้าเต็มที่ ขีดเส้นตรงปลายนิ้วที่ยาวที่สุด</li>
+          <li>วัดจากขอบกระดาษถึงเส้นเป็นเซนติเมตร ทำทั้งสองข้าง ใช้ค่าที่ยาวกว่า</li>
+          <li>ถ้าค่าอยู่ระหว่างสองไซซ์ ให้เลือกไซซ์ที่ใหญ่กว่า</li>
+        </ol>
+        <div class="ruler" aria-hidden="true"></div>
+        <a href="#article" data-art="1">อ่านบทความวิธีวัดเท้าแบบละเอียด →</a>
+      </div>
+    </div>
+  </section>`;
+}
+
+/* ---------- articles ---------- */
+function renderGuide(){
+  const a=[...db().articles].sort((x,y)=>y.created_at.localeCompare(x.created_at));
+  return `<section style="display:grid;gap:6px"><span class="eyebrow">Style Guide</span><h1>ความรู้เรื่องรองเท้า</h1><p class="muted">วิธีเลือกไซซ์ ประเภทรองเท้าตามการใช้งาน การดูแลรักษา และนโยบายเปลี่ยนคืน</p></section>
+  <section class="alist">${a.map(x=>`<button class="acard" data-art="${x.id}"><span class="tag">${esc(x.topic)}</span><h3>${esc(x.title)}</h3><p class="muted" style="font-size:14px">${esc(x.content.split('\n')[0].slice(0,110))}…</p><span class="muted" style="font-size:12px">${dt(x.created_at)}</span></button>`).join('')||'<div class="empty">ยังไม่มีบทความ</div>'}</section>`;
+}
+function mdLite(t){return esc(t).split('\n').map(l=>l.startsWith('## ')?`<h3>${l.slice(3)}</h3>`:l.trim()?`<p>${l}</p>`:'').join('');}
+function renderArticle(){
+  const a=db().articles.find(x=>x.id===view.article); if(!a)return renderGuide();
+  const rel=models().filter(m=>m.article_id===a.id);
+  return `<article class="article"><a href="#guide" data-go="guide">← บทความทั้งหมด</a><span class="tag" style="justify-self:start">${esc(a.topic)}</span><h1>${esc(a.title)}</h1><span class="muted" style="font-size:13px">${dt(a.created_at)}</span><div class="body">${mdLite(a.content)}</div></article>
+  ${rel.length?`<section style="display:grid;gap:12px"><h3>สินค้าที่เกี่ยวข้อง</h3><div class="grid">${rel.map(m=>pcard(m,me())).join('')}</div></section>`:''}`;
+}
+
+/* ---------- cart & checkout ---------- */
+function renderCart(){
+  const u=me(); const lines=S.cart.map(c=>({...c,p:db().products.find(p=>p.id===c.pid)})).filter(l=>l.p);
+  const total=lines.reduce((a,l)=>a+l.p.price*l.qty,0);
+  if(!lines.length) return `<section style="display:grid;gap:6px"><h1>ตะกร้าสินค้า</h1></section><div class="empty">ตะกร้ายังว่าง <a href="#shop" data-go="shop">เลือกรองเท้า</a></div>`;
+  return `<section><h1>ตะกร้าสินค้า</h1></section>
+  <section class="two">
+    <div class="card">${lines.map(l=>`<div class="cartline"><div class="pimg">${shoe(l.p.category,l.p.color)}</div>
+      <div style="min-width:0"><div class="pname" style="font-family:var(--f-display);font-weight:600">${esc(l.p.name)}</div><div class="muted" style="font-size:13px">EU ${l.p.size} · ${esc(l.p.color)} · ${baht(l.p.price)}</div>
+        <div class="qty" style="margin-top:6px"><button data-qty="${l.pid}" data-d="-1" aria-label="ลดจำนวน">−</button><span class="mono">${l.qty}</span><button data-qty="${l.pid}" data-d="1" aria-label="เพิ่มจำนวน">+</button><button class="btn ghost sm danger" data-rm="${l.pid}">ลบ</button></div></div>
+      <div class="price">${baht(l.p.price*l.qty)}</div></div>`).join('')}</div>
+    <div class="card" style="display:grid;gap:16px">
+      <div class="sum"><div><span class="muted">สินค้า ${lines.reduce((a,l)=>a+l.qty,0)} คู่</span><span class="mono">${baht(total)}</span></div><div><span class="muted">ค่าจัดส่ง</span><span class="mono">ฟรี</span></div><div class="total"><span>รวม</span><span class="mono">${baht(total)}</span></div></div>
+      ${u?`<form class="form" id="checkout"><label class="f">ที่อยู่จัดส่ง<textarea id="ship" required style="min-height:90px">${esc(u.address)}</textarea></label><button class="btn primary" type="submit">ยืนยันสั่งซื้อ</button></form>`
+        :`<div class="note">เข้าสู่ระบบก่อนสั่งซื้อ เพื่อบันทึกคำสั่งซื้อในประวัติของคุณ</div><a class="btn primary" href="#account" data-go="account">เข้าสู่ระบบ / สมัครสมาชิก</a>`}
+    </div>
+  </section>`;
+}
+function checkout(addr){
+  const u=me(); const D=db();
+  for(const c of S.cart){const p=D.products.find(x=>x.id===c.pid); if(!p||p.stock_quantity<c.qty){toast(`${p?p.name+' EU '+p.size:'สินค้า'} สต็อกไม่พอ`);return;}}
+  const oid=D.seq.order++; let total=0;
+  S.cart.forEach(c=>{const p=D.products.find(x=>x.id===c.pid); p.stock_quantity-=c.qty; total+=p.price*c.qty; D.order_items.push({id:D.seq.item++,order_id:oid,product_id:p.id,quantity:c.qty,price:p.price});});
+  D.orders.push({id:oid,user_id:u.id,total_amount:total,status:'Pending',shipping_address:addr,created_at:new Date().toISOString()});
+  if(!u.address)u.address=addr;
+  S.cart=[]; save(); go('account'); toast(`สั่งซื้อสำเร็จ เลขที่ #${oid}`);
+}
+
+/* ---------- account ---------- */
+function sizeOptions(sel){return `<option value="">ไม่ระบุ</option>`+[...new Set(SIZE_CHART.map(r=>Math.floor(r.eu)))].map(s=>`<option ${sel==s?'selected':''}>${s}</option>`).join('');}
+function renderAccount(){
+  const u=me();
+  if(!u) return `<section style="display:grid;gap:6px"><h1>บัญชีของฉัน</h1><p class="muted">บัญชีทดลอง: ลูกค้า somchai@kaodee.test / 1234 · แอดมิน admin@kaodee.test / admin123</p></section>
+  <section class="row2" style="align-items:start">
+    <form class="card form" id="login"><h3>เข้าสู่ระบบ</h3>
+      <label class="f">อีเมล<input id="le" type="email" required value="somchai@kaodee.test"></label>
+      <label class="f">รหัสผ่าน<input id="lp" type="password" required value="1234"></label>
+      <button class="btn primary" type="submit">เข้าสู่ระบบ</button>
+      <button class="btn" type="button" data-act="asAdmin">เข้าเป็นแอดมิน (ทดลอง)</button></form>
+    <form class="card form" id="register"><h3>สมัครสมาชิก</h3>
+      <label class="f">ชื่อ-นามสกุล<input id="rn" required></label>
+      <label class="f">อีเมล<input id="re" type="email" required></label>
+      <label class="f">รหัสผ่าน<input id="rp" type="password" required minlength="4"></label>
+      <label class="f">ไซซ์รองเท้าที่สวมประจำ (EU)<select id="rs">${sizeOptions(null)}</select></label>
+      <label class="f">ที่อยู่<textarea id="ra" style="min-height:70px"></textarea></label>
+      <button class="btn primary" type="submit">สมัครสมาชิก</button></form>
+  </section>`;
+  const orders=db().orders.filter(o=>o.user_id===u.id).sort((a,b)=>b.id-a.id);
+  return `<section class="head"><div style="display:grid;gap:6px"><span class="eyebrow">${u.role==='admin'?'แอดมิน':'ลูกค้า'}</span><h1>${esc(u.name)}</h1><p class="muted">${esc(u.email)}</p></div><button class="btn" data-act="logout">ออกจากระบบ</button></section>
+  <section class="two">
+    <div class="card" style="display:grid;gap:12px"><h3>ประวัติการสั่งซื้อ</h3>${orders.length?orders.map(o=>orderBlock(o)).join(''):'<p class="muted">ยังไม่มีคำสั่งซื้อ</p>'}</div>
+    <form class="card form" id="profile"><h3>ข้อมูลของฉัน</h3>
+      <label class="f">ไซซ์ประจำ (EU)<select id="ps">${sizeOptions(u.foot_size)}</select></label>
+      <label class="f">ที่อยู่จัดส่ง<textarea id="pa" style="min-height:80px">${esc(u.address)}</textarea></label>
+      <button class="btn" type="submit">บันทึก</button></form>
+  </section>`;
+}
+function orderBlock(o){
+  const items=db().order_items.filter(i=>i.order_id===o.id).map(i=>({...i,p:db().products.find(p=>p.id===i.product_id)}));
+  return `<div style="border-top:1px solid var(--line);padding-top:10px;display:grid;gap:4px">
+    <div class="head" style="align-items:center"><span class="mono">#${o.id}</span><span class="pill ${o.status}">${STATUS_TH[o.status]}</span></div>
+    <span class="muted" style="font-size:13px">${dt(o.created_at)}</span>
+    ${items.map(i=>`<div style="display:flex;justify-content:space-between;gap:8px;font-size:14px"><span>${esc(i.p?i.p.name:'สินค้าที่ถูกลบ')} ${i.p?'EU '+i.p.size:''} × ${i.quantity}</span><span class="mono">${baht(i.price*i.quantity)}</span></div>`).join('')}
+    <div style="display:flex;justify-content:space-between;font-weight:600"><span>รวม</span><span class="mono">${baht(o.total_amount)}</span></div></div>`;
+}
+
+/* ---------- admin ---------- */
+function renderAdmin(){
+  const u=me(); if(!u||u.role!=='admin') return `<div class="empty">หน้านี้สำหรับแอดมินเท่านั้น <a href="#account" data-go="account">เข้าสู่ระบบ</a></div>`;
+  const t=view.adminTab;
+  const tabs=[['dash','Dashboard'],['inv','คลังสินค้า'],['orders','ออเดอร์'],['arts','บทความ']];
+  return `<section style="display:grid;gap:6px"><span class="eyebrow">หลังร้าน</span><h1>${tabs.find(x=>x[0]===t)[1]}</h1></section>
+  <div class="tabs">${tabs.map(([k,l])=>`<button data-tab="${k}" class="${t===k?'on':''}">${l}</button>`).join('')}</div>
+  ${({dash:adminDash,inv:adminInv,orders:adminOrders,arts:adminArts})[t]()}`;
+}
+function adminDash(){
+  const D=db(); const valid=D.orders.filter(o=>o.status!=='Cancelled');
+  const revenue=valid.reduce((a,o)=>a+o.total_amount,0); const low=D.products.filter(p=>p.stock_quantity<3);
+  const pending=D.orders.filter(o=>o.status==='Pending').length;
+  return `<section class="stats">
+    <div class="stat"><span class="eyebrow">ยอดขายรวม</span><span class="v">${baht(revenue)}</span><span class="muted" style="font-size:12px">ไม่รวมออเดอร์ที่ยกเลิก</span></div>
+    <div class="stat"><span class="eyebrow">คำสั่งซื้อ</span><span class="v">${D.orders.length}</span><span class="muted" style="font-size:12px">ทั้งหมด</span></div>
+    <div class="stat"><span class="eyebrow">รอดำเนินการ</span><span class="v">${pending}</span><span class="muted" style="font-size:12px">สถานะ Pending</span></div>
+    <div class="stat ${low.length?'alert':''}"><span class="eyebrow">สต็อกต่ำ</span><span class="v">${low.length}</span><span class="muted" style="font-size:12px">ไซซ์ที่เหลือน้อยกว่า 3 คู่</span></div>
+  </section>
+  <section class="two">
+    <div class="card" style="display:grid;gap:10px"><h3>ออเดอร์ล่าสุด</h3><div class="tablewrap"><table><thead><tr><th>เลขที่</th><th>ลูกค้า</th><th>สถานะ</th><th class="num">ยอด</th></tr></thead><tbody>
+      ${[...D.orders].sort((a,b)=>b.id-a.id).slice(0,6).map(o=>`<tr><td class="mono">#${o.id}</td><td>${esc((D.users.find(x=>x.id===o.user_id)||{}).name||'-')}</td><td><span class="pill ${o.status}">${STATUS_TH[o.status]}</span></td><td class="num">${baht(o.total_amount)}</td></tr>`).join('')}</tbody></table></div></div>
+    <div class="card" style="display:grid;gap:10px"><h3>ป้ายเตือนสต็อกต่ำ</h3>${low.length?`<div class="tablewrap"><table><thead><tr><th>รุ่น</th><th class="num">EU</th><th class="num">คงเหลือ</th></tr></thead><tbody>${low.map(p=>`<tr class="low"><td>${esc(p.name)}</td><td class="num">${p.size}</td><td class="num">${p.stock_quantity}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">สต็อกทุกไซซ์ยังเพียงพอ</p>'}</div>
+  </section>`;
+}
+function adminInv(){
+  const D=db(); const e=view.editP?D.products.find(p=>p.id===view.editP):null;
+  const rows=[...D.products].sort((a,b)=>a.name.localeCompare(b.name)||a.size-b.size);
+  return `<section class="admin-split">
+    <form class="card form" id="pform"><h3>${e?`แก้ไขสินค้า #${e.id}`:'เพิ่มสินค้า'}</h3>
+      <p class="muted" style="font-size:13px">1 แถว = 1 รุ่นต่อ 1 ไซซ์ ชื่อรุ่นเดียวกันจะรวมเป็นการ์ดเดียวในหน้าร้าน</p>
+      <label class="f">ชื่อรุ่น<input id="pn" required value="${esc(e?.name||'')}"></label>
+      <div class="row2"><label class="f">ประเภท<select id="pc">${Object.entries(CAT).map(([k,t])=>`<option value="${k}" ${e?.category===k?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="f">การใช้งาน<select id="pu">${Object.entries(USE).map(([k,t])=>`<option value="${k}" ${e?.usage_type===k?'selected':''}>${t}</option>`).join('')}</select></label></div>
+      <div class="row2"><label class="f">แบรนด์<input id="pb" required value="${esc(e?.brand||'')}"></label>
+      <label class="f">สี<select id="pcol">${Object.keys(COLORS).map(c=>`<option ${e?.color===c?'selected':''}>${c}</option>`).join('')}</select></label></div>
+      <div class="row2"><label class="f">ไซซ์ (EU)<input id="psz" type="number" step="0.5" required value="${e?.size??''}"></label>
+      <label class="f">ราคา (บาท)<input id="ppr" type="number" min="0" required value="${e?.price??''}"></label></div>
+      <label class="f">สต็อก (คู่)<input id="pst" type="number" min="0" required value="${e?.stock_quantity??''}"></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit">${e?'บันทึกการแก้ไข':'เพิ่มสินค้า'}</button>${e?'<button class="btn" type="button" data-act="cancelP">ยกเลิก</button>':''}</div>
+    </form>
+    <div class="card" style="display:grid;gap:10px;min-width:0"><h3>รายการสินค้า (${rows.length} แถว)</h3><div class="tablewrap"><table><thead><tr><th>รุ่น</th><th>ประเภท</th><th class="num">EU</th><th class="num">ราคา</th><th class="num">สต็อก</th><th></th></tr></thead><tbody>
+      ${rows.map(p=>`<tr class="${p.stock_quantity<3?'low':''}"><td>${esc(p.name)}<div class="muted" style="font-size:12px">${esc(p.brand)} · ${esc(p.color)}</div></td><td>${CAT[p.category]}</td><td class="num">${p.size}</td><td class="num">${baht(p.price)}</td><td class="num">${p.stock_quantity}${p.stock_quantity<3?' <span class="pill low">ต่ำ</span>':''}</td><td><button class="btn sm" data-editp="${p.id}">แก้ไข</button> <button class="btn sm danger" data-delp="${p.id}">${confirmDel===('p'+p.id)?'ยืนยันลบ':'ลบ'}</button></td></tr>`).join('')}</tbody></table></div></div>
+  </section>`;
+}
+function adminOrders(){
+  const D=db(); const list=[...D.orders].sort((a,b)=>b.id-a.id);
+  return `<div class="card"><div class="tablewrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>ลูกค้า</th><th>รายการ</th><th class="num">ยอด</th><th>สถานะ</th><th></th></tr></thead><tbody>
+  ${list.map(o=>{const items=D.order_items.filter(i=>i.order_id===o.id);return `<tr><td class="mono">#${o.id}</td><td>${dt(o.created_at)}</td><td>${esc((D.users.find(x=>x.id===o.user_id)||{}).name||'-')}</td><td>${items.map(i=>{const p=D.products.find(x=>x.id===i.product_id);return esc(p?p.name+' EU '+p.size:'-')+' ×'+i.quantity}).join('<br>')}</td><td class="num">${baht(o.total_amount)}</td>
+    <td><select data-status="${o.id}" aria-label="สถานะออเดอร์ #${o.id}" style="width:auto">${STATUSES.map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${STATUS_TH[s]}</option>`).join('')}</select></td>
+    <td>${o.status==='Pending'||o.status==='Paid'?`<button class="btn sm primary" data-ship="${o.id}">จัดส่งแล้ว</button>`:''}</td></tr>`}).join('')}</tbody></table></div></div>`;
+}
+function adminArts(){
+  const D=db(); const e=view.editA?D.articles.find(a=>a.id===view.editA):null;
+  return `<section class="admin-split">
+    <form class="card form" id="aform"><h3>${e?'แก้ไขบทความ':'เขียนบทความใหม่'}</h3>
+      <label class="f">หัวข้อ<input id="at" required value="${esc(e?.title||'')}"></label>
+      <label class="f">หมวด<input id="atp" required value="${esc(e?.topic||'')}" placeholder="เช่น การดูแลรักษา"></label>
+      <label class="f">เนื้อหา (ขึ้นบรรทัดด้วย ## เพื่อทำหัวข้อย่อย)<textarea id="ac" required style="min-height:220px">${esc(e?.content||'')}</textarea></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" type="submit">${e?'บันทึก':'เผยแพร่'}</button>${e?'<button class="btn" type="button" data-act="cancelA">ยกเลิก</button>':''}</div>
+    </form>
+    <div class="card" style="display:grid;gap:10px;min-width:0"><h3>บทความทั้งหมด</h3><div class="tablewrap"><table><thead><tr><th>หัวข้อ</th><th>หมวด</th><th>วันที่</th><th></th></tr></thead><tbody>
+    ${D.articles.map(a=>`<tr><td style="white-space:normal">${esc(a.title)}</td><td>${esc(a.topic)}</td><td>${dt(a.created_at)}</td><td><button class="btn sm" data-edita="${a.id}">แก้ไข</button> <button class="btn sm danger" data-dela="${a.id}">${confirmDel===('a'+a.id)?'ยืนยันลบ':'ลบ'}</button></td></tr>`).join('')}</tbody></table></div></div>
+  </section>`;
+}
+function setStatus(id,status){
+  const D=db(); const o=D.orders.find(x=>x.id===id); if(!o||o.status===status)return;
+  const items=D.order_items.filter(i=>i.order_id===id);
+  if(status==='Cancelled') items.forEach(i=>{const p=D.products.find(x=>x.id===i.product_id); if(p)p.stock_quantity+=i.quantity;});
+  if(o.status==='Cancelled') items.forEach(i=>{const p=D.products.find(x=>x.id===i.product_id); if(p)p.stock_quantity=Math.max(0,p.stock_quantity-i.quantity);});
+  o.status=status; save(); render(); toast(`ออเดอร์ #${id}: ${STATUS_TH[status]}`);
+}
+let confirmDel=null;
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-go],[data-open],[data-close],[data-pick],[data-add],[data-art],[data-cat],[data-qty],[data-rm],[data-act],[data-tab],[data-editp],[data-delp],[data-ship],[data-edita],[data-dela]');
+  if(!el)return; const d=el.dataset;
+  if(d.close!==undefined&&(el.classList.contains('overlay')?e.target===el:true)&&!d.go){closeLayer();return;}
+  if(d.close!==undefined&&el.classList.contains('overlay')&&e.target!==el){/* click inside modal */}
+  if(d.go){e.preventDefault();closeLayer();go(d.go);return;}
+  if(d.open){openProduct(d.open);return;}
+  if(d.pick){pick.size=+d.pick;openProduct(pick.model);return;}
+  if(d.add){addToCart(+d.add);return;}
+  if(d.art){e.preventDefault();closeLayer();go('article',{article:+d.art});return;}
+  if(d.cat){view.filters.cat=d.cat;render();return;}
+  if(d.qty){const l=S.cart.find(c=>c.pid===+d.qty);const p=db().products.find(x=>x.id===+d.qty);l.qty+=+d.d;if(l.qty>p.stock_quantity){l.qty=p.stock_quantity;toast('สต็อกไม่พอ');}if(l.qty<=0)S.cart=S.cart.filter(c=>c!==l);save();render();return;}
+  if(d.rm){S.cart=S.cart.filter(c=>c.pid!==+d.rm);save();render();return;}
+  if(d.tab){view.adminTab=d.tab;confirmDel=null;render();return;}
+  if(d.editp){view.editP=+d.editp;render();return;}
+  if(d.delp){const k='p'+d.delp;if(confirmDel!==k){confirmDel=k;render();return;}const D=db();D.products=D.products.filter(p=>p.id!==+d.delp);S.cart=S.cart.filter(c=>c.pid!==+d.delp);confirmDel=null;save();render();toast('ลบสินค้าแล้ว');return;}
+  if(d.edita){view.editA=+d.edita;render();return;}
+  if(d.dela){const k='a'+d.dela;if(confirmDel!==k){confirmDel=k;render();return;}const D=db();D.articles=D.articles.filter(a=>a.id!==+d.dela);confirmDel=null;save();render();toast('ลบบทความแล้ว');return;}
+  if(d.ship){setStatus(+d.ship,'Shipped');return;}
+  const a=d.act;
+  if(a==='logout'){S.session=null;save();go('shop');toast('ออกจากระบบแล้ว');}
+  if(a==='asAdmin'){S.session=1;save();go('admin',{adminTab:'dash'});toast('เข้าสู่ระบบเป็นแอดมิน');}
+  if(a==='cancelP'){view.editP=null;render();}
+  if(a==='cancelA'){view.editA=null;render();}
+  if(a==='savefit'){const f=fitFromCm(parseFloat(view.fitCm));if(f){me().foot_size=Math.round(f.eu);save();render();toast(`บันทึกไซซ์ประจำ EU ${Math.round(f.eu)} แล้ว`);}}
+  if(a==='reset'){if(confirmDel!=='reset'){confirmDel='reset';el.textContent='กดอีกครั้งเพื่อยืนยันรีเซ็ต';return;}S={db:seed(),cart:[],session:null};confirmDel=null;save();go('shop');toast('รีเซ็ตข้อมูลตัวอย่างแล้ว');}
+});
+document.addEventListener('input',e=>{
+  const id=e.target.id;
+  if(id==='q'){view.filters.q=e.target.value;const pos=e.target.selectionStart;render();const q=$('#q');q.focus();try{q.setSelectionRange(pos,pos)}catch(_){} }
+  if(id==='fitCm'){view.fitCm=e.target.value;const f=fitFromCm(parseFloat(view.fitCm));const r=$('#fitRes');
+    if(view.page==='size'){render();const i=$('#fitCm');i.focus();}
+    else if(r) r.textContent=f?`EU ${f.eu} · US ${f.usm} · UK ${f.uk}`:'กรอกความยาวเท้าเพื่อดูไซซ์';}
+});
+document.addEventListener('change',e=>{
+  const id=e.target.id;
+  if(id==='fuse'){view.filters.use=e.target.value;render();}
+  if(id==='fsize'){view.filters.size=e.target.value;render();}
+  if(e.target.dataset.status){setStatus(+e.target.dataset.status,e.target.value);}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#layer').innerHTML)closeLayer();});
+document.addEventListener('submit',e=>{
+  e.preventDefault(); const f=e.target.id; const D=db(); const v=id=>$('#'+id).value.trim();
+  if(f==='login'){const u=D.users.find(x=>x.email.toLowerCase()===v('le').toLowerCase()&&x.password===$('#lp').value);
+    if(!u){toast('อีเมลหรือรหัสผ่านไม่ถูกต้อง');return;} S.session=u.id;save();go(S.cart.length?'cart':(u.role==='admin'?'admin':'account'));toast(`ยินดีต้อนรับ ${u.name}`);}
+  if(f==='register'){if(D.users.some(x=>x.email.toLowerCase()===v('re').toLowerCase())){toast('อีเมลนี้มีบัญชีแล้ว ลองเข้าสู่ระบบ');return;}
+    const u={id:D.seq.user++,name:v('rn'),email:v('re'),password:$('#rp').value,role:'customer',address:v('ra'),foot_size:v('rs')?+v('rs'):null};
+    D.users.push(u);S.session=u.id;save();go(S.cart.length?'cart':'shop');toast('สมัครสมาชิกสำเร็จ');}
+  if(f==='profile'){const u=me();u.foot_size=v('ps')?+v('ps'):null;u.address=v('pa');save();render();toast('บันทึกข้อมูลแล้ว');}
+  if(f==='checkout'){checkout(v('ship'));}
+  if(f==='pform'){const name=v('pn');const existing=D.products.find(p=>p.name===name);
+    const data={name,category:v('pc'),usage_type:v('pu'),brand:v('pb'),color:v('pcol'),size:+v('psz'),price:+v('ppr'),stock_quantity:+v('pst')};
+    if(view.editP){Object.assign(D.products.find(p=>p.id===view.editP),data);toast('บันทึกสินค้าแล้ว');view.editP=null;}
+    else{const model=existing?existing.model:name.toLowerCase().replace(/\s+/g,'-')+'-'+D.seq.product;
+      if(D.products.some(p=>p.model===model&&p.size===data.size)){toast('รุ่นนี้มีไซซ์นี้แล้ว แก้ไขสต็อกจากตารางแทน');return;}
+      D.products.push({id:D.seq.product++,model,article_id:existing?existing.article_id:null,...data});toast('เพิ่มสินค้าแล้ว');}
+    save();render();}
+  if(f==='aform'){const data={title:v('at'),topic:v('atp'),content:$('#ac').value};
+    if(view.editA){Object.assign(D.articles.find(a=>a.id===view.editA),data);view.editA=null;toast('บันทึกบทความแล้ว');}
+    else{D.articles.push({id:D.seq.article++,created_at:new Date().toISOString(),...data});toast('เผยแพร่บทความแล้ว');}
+    save();render();}
+});
+
+/* ---------- boot ---------- */
+(function(){const h=(location.hash||'').slice(1);if(['shop','size','guide','cart','account','admin'].includes(h))view.page=h;render();})();
+</script>
+</body>
+</html>
